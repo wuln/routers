@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Hash Router</title>
+	<style>
+		#app {
+			width: 400px;
+			height: 400px;
+			text-align: center;
+		}
+		ul > li {
+			display: inline-block;
+			margin: 10px;
+		}
+	</style>
+	<script>
+		function Router () {
+			this.currentRoute = '/'
+			this.routes = {}
+		}
+
+		Router.prototype.route = function (path, callback) {
+			this.routes[path] = callback || function () {}
+		}
+
+		Router.prototype.matchView = function () {
+			this.currentRoute = location.hash.slice(1) || '/'
+			this.routes[this.currentRoute] && this.routes[this.currentRoute]()
+		}
+
+		Router.prototype.init = function () {
+			window.addEventListener('load', this.matchView.bind(this), false)
+			window.addEventListener('hashchange', this.matchView.bind(this), false)
+		}
+	</script>
+</head>
+<body>
+	<div id="app">
+		<ul>	
+			<li><a href="#/">Home</a></li>		
+			<li><a href="#/docs/string">string</a></li>
+			<li><a href="#/docs/function">function</a></li>
+			<li><a href="#/docs/class">class</a></li>			
+		</ul>
+		<div id="content"></div>
+		<script>
+			window.Router = new Router()
+			Router.init() 
+			Router.route('/', function () {
+				document.getElementById('content').innerHTML = 'Welcome to the home page!'
+			})
+			Router.route('/docs/string', function () {
+				document.getElementById('content').innerHTML = 'docs of string'
+			})
+			Router.route('/docs/function', function () {
+				document.getElementById('content').innerHTML = 'docs of function'
+			})
+			Router.route('/docs/class', function () {
+				document.getElementById('content').innerHTML = 'docs of class'
+			})
+		</script>
+	</div>
+</body>
+</html>
